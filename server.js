@@ -23,29 +23,28 @@ app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
-app.get('/api/:date?', (req, res) => {
-  const { date } = req.params;
+app.get('/api/:date_string?', (req, res) => {
+  const { date_string } = req.params;
+  let date,
+    result = { error: 'Invalid Date' };
+  if (typeof date_string === 'string') {
+    if (date_string === '') {
+      date = new Date();
+    } else if (+date_string == date_string) {
+      date = new Date(+date_string);
+    } else {
+      date = new Date(date_string);
+    }
 
-  // console.log(date.includes('-'));
-  if (!date) {
-    return res.json({
-      unix: Date.now(),
-      utc: new Date().toUTCString(),
-    });
+    if (!isNaN(date)) {
+      result = {
+        unix: date.getTime(),
+        utc: date.toUTCString(),
+      };
+    }
   }
-  const date_string = date.includes('-') ? date : +date;
-  const d = new Date(date_string);
-  const unix = d.getTime();
-  const utc = d.toUTCString();
-  if (!unix) {
-    return res.json({
-      error: 'Invalid Date',
-    });
-  }
-  return res.json({
-    unix,
-    utc,
-  });
+
+  res.json(result);
 });
 
 // listen for requests :)
