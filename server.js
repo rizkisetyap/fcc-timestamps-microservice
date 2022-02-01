@@ -33,8 +33,8 @@ app.get('/api/:date?', (req, res) => {
       utc: new Date().toUTCString(),
     });
   }
-  const dt = date.includes('-') ? date : +date;
-  const d = new Date(dt);
+  const date_string = date.includes('-') ? date : +date;
+  const d = new Date(date_string);
   const unix = d.getTime();
   const utc = d.toUTCString();
   if (!unix) {
